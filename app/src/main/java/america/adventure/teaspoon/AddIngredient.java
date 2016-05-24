@@ -1,5 +1,7 @@
 package america.adventure.teaspoon;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,34 +13,10 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-class IngredientTuple {
-    private String ingredient_name;
-    private int amount;
-    private String measure;
-
-    public IngredientTuple(String ingredient_name, int amount, String measure) {
-        this.ingredient_name = ingredient_name;
-        this.amount = amount;
-        this.measure = measure;
-    }
-
-    public String getIngredient_name() {
-        return ingredient_name;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public String getMeasure() {
-        return measure;
-    }
-}
-
 public class AddIngredient extends AppCompatActivity {
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<String> showList = new ArrayList<>();
-    ArrayList<IngredientTuple> listItems = new ArrayList<>();
+    ArrayList<IngredientTuple> listItems;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<String> adapter;
@@ -50,8 +28,12 @@ public class AddIngredient extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, showList);
+        listItems = (ArrayList<IngredientTuple>) getIntent().getExtras().get("recipe");
+        for (IngredientTuple listItem : listItems) {
+            showList.add(listItem.toString());
+        }
 
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, showList);
         final ListView listview = (ListView) findViewById(R.id.ingredient_list);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,6 +44,7 @@ public class AddIngredient extends AppCompatActivity {
                 view.animate().setDuration(1000).alpha(0).withEndAction(new Runnable() {
                             @Override
                             public void run() {
+                                listItems.remove(showList.indexOf(item));
                                 showList.remove(item);
                                 adapter.notifyDataSetChanged();
                                 view.setAlpha(1);
@@ -78,14 +61,29 @@ public class AddIngredient extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.ok_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.ok1_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent i = new Intent();
-                // Sending param key as 'website' and value as 'androidhive.info'
-                i.putExtra("website", "AndroidHive.info");
-                // Setting resultCode to 100 to identify on old activity
-                setResult(Utils.RECIPE_CODE, i);
+                if (!listItems.isEmpty()) {
+                    Intent i = new Intent();
+                    // Sending param key as 'website' and value as 'androidhive.info'
+                    i.putExtra("recipe", listItems);
 
+                    // If this is a new recipe
+                    if (((ArrayList<IngredientTuple>) getIntent().getExtras().get("recipe")).size() == 0) {
+                        setResult(Utils.NEW_RECIPE_CODE, i);
+                    } else {
+                        // If this recipe already exists
+                        setResult(Utils.UPDATE_RECIPE_CODE, i);
+                    }
+                }
+
+                //Closing SecondScreen Activity
+                finish();
+            }
+        });
+
+        findViewById(R.id.cancel1_button).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
                 //Closing SecondScreen Activity
                 finish();
             }
@@ -105,8 +103,12 @@ public class AddIngredient extends AppCompatActivity {
             android.text.SpannableString amount = (android.text.SpannableString) data.getExtras().get("amount");
             String measurement = (String) data.getExtras().get("measurement");
 
-            listItems.add(new IngredientTuple(ingredient_name.toString(), Integer.valueOf(amount.toString()), measurement));
-            showList.add(ingredient_name.toString() + ": " + amount.toString() + measurement);
+            if (ingredient_name == null || amount == null)
+                return;
+
+            IngredientTuple newIngredient = new IngredientTuple(ingredient_name.toString(), Integer.valueOf(amount.toString()), measurement);
+            listItems.add(newIngredient);
+            showList.add(newIngredient.toString());
             adapter.notifyDataSetChanged();
         }
     }
