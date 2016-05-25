@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 public class NewIngredient extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
     private String measurement = "";
 
     @Override
@@ -41,7 +39,7 @@ public class NewIngredient extends AppCompatActivity implements AdapterView.OnIt
                 i.putExtra("measurement", measurement);
 
                 // Setting resultCode to 100 to identify on old activity
-                setResult(Utils.INGREDIENT_CODE, i);
+                setResult(Utils.NEW_INGREDIENT_CODE, i);
 
                 //Closing SecondScreen Activity
                 finish();
