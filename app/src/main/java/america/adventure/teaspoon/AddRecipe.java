@@ -30,7 +30,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-// TODO: delete recipe
 public class AddRecipe extends AppCompatActivity {
     private ArrayList<ArrayList<IngredientTuple>> recipes = new ArrayList<>();
     private ArrayList<String> recipe_names = new ArrayList<>();
@@ -92,14 +91,16 @@ public class AddRecipe extends AppCompatActivity {
                 recipes.remove(old_recipe);
             }
         } else {
-            ArrayList<IngredientTuple> new_recipe = (ArrayList<IngredientTuple>) data.getExtras().get("recipe");
+            ArrayList<IngredientTuple> new_recipe;
 
             switch (resultCode) {
                 case Utils.NEW_RECIPE_CODE:
+                    new_recipe = (ArrayList<IngredientTuple>) data.getExtras().get("recipe");
                     recipes.add(new_recipe);
                     recipe_names.add("Recipe " + recipes.size());
                     break;
                 case Utils.UPDATE_RECIPE_CODE:
+                    new_recipe = (ArrayList<IngredientTuple>) data.getExtras().get("recipe");
                     recipes.remove(old_recipe);
                     recipes.add(new_recipe);
                     break;
@@ -125,7 +126,7 @@ public class AddRecipe extends AppCompatActivity {
             DocumentBuilder db = dbf.newDocumentBuilder();
             // parse using the builder to get the DOM mapping of the
             // XML file
-            dom = db.parse(xml_file.getAbsolutePath());
+            dom = db.parse(xml_file);
 
             Element doc = dom.getDocumentElement();
 

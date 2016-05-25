@@ -39,6 +39,6 @@ public class IngredientTuple implements java.io.Serializable {
     public void setMeasure(String measure) { this.measure = measure; }
 
     public String toString() {
-        return ingredient_name + ": " + amount + measure;
+        return ingredient_name + ": " + amount + " " + measure;
     }
 }
