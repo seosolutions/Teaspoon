@@ -2,17 +2,17 @@
     <string name="app_name">Teaspoon</string>
     <string name="action_exit">Exit</string>
     <string name="action_save">Save</string>
-    <string name="title_activity_add_ingredient">AddIngredient</string>
+    <string name="title_activity_add_ingredient">Add a New Recipe</string>
     <string name="title_activity_bc">bc</string>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
-    <string name="title_activity_new_ingredient">NewIngredient</string>
+    <string name="title_activity_new_ingredient">Add a New Ingredient</string>
     <string-array name="measurements">
-        <item>ml</item>
+        <item>gram</item>
         <item>ounce</item>
+        <item>ml</item>
         <item>teaspoon</item>
-        <item>cupspoon</item>
-        <item>g</item>
+        <item>tablespoon</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

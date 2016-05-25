@@ -30,7 +30,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-public class AddRecipe extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private ArrayList<ArrayList<IngredientTuple>> recipes = new ArrayList<>();
     private ArrayList<String> recipe_names = new ArrayList<>();
     private ArrayAdapter<String> adapter;
@@ -44,7 +44,7 @@ public class AddRecipe extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_recipe);
+        setContentView(R.layout.activity_main_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -60,7 +60,7 @@ public class AddRecipe extends AppCompatActivity {
                 final String item = (String) parent.getItemAtPosition(position);
                 old_recipe = recipes.get(recipe_names.indexOf(item));
 
-                Intent i = new Intent(getApplicationContext(), AddIngredient.class);
+                Intent i = new Intent(getApplicationContext(), NewRecipe.class);
                 i.putExtra("recipe", old_recipe);
                 startActivityForResult(i, Utils.UPDATE_RECIPE_CODE);
             }
@@ -72,7 +72,7 @@ public class AddRecipe extends AppCompatActivity {
             public void onClick(View view) {
                 // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-                Intent i = new Intent(getApplicationContext(), AddIngredient.class);
+                Intent i = new Intent(getApplicationContext(), NewRecipe.class);
                 i.putExtra("recipe", new ArrayList<IngredientTuple>());
                 startActivityForResult(i, Utils.NEW_RECIPE_CODE);
             }
@@ -87,7 +87,7 @@ public class AddRecipe extends AppCompatActivity {
 
         if (resultCode == Utils.DELETE_RECIPE_CODE) {
             if (old_recipe != null) {
-                recipe_names.remove(recipes.indexOf(old_recipe));
+                System.out.println(Utils.UPDATE_RECIPE_CODE + ": " + recipe_names.remove(recipes.indexOf(old_recipe)));
                 recipes.remove(old_recipe);
             }
         } else {
@@ -101,7 +101,7 @@ public class AddRecipe extends AppCompatActivity {
                     break;
                 case Utils.UPDATE_RECIPE_CODE:
                     new_recipe = (ArrayList<IngredientTuple>) data.getExtras().get("recipe");
-                    recipes.remove(old_recipe);
+                    System.out.println(Utils.UPDATE_RECIPE_CODE + ": " + recipes.remove(old_recipe));
                     recipes.add(new_recipe);
                     break;
             }
@@ -156,7 +156,7 @@ public class AddRecipe extends AppCompatActivity {
                                 ingredient.setIngredient_name(attrval);
                                 break;
                             case "amount":
-                                ingredient.setAmount(Integer.valueOf(attrval));
+                                ingredient.setAmount(Double.valueOf(attrval));
                                 break;
                             case "measure":
                                 ingredient.setMeasure(attrval);
@@ -189,7 +189,7 @@ public class AddRecipe extends AppCompatActivity {
 
                 for (IngredientTuple ingredientTuple : recipe) {
                     recipeElement.setAttribute("ingredient_name", ingredientTuple.getIngredient_name());
-                    recipeElement.setAttribute("amount", Integer.toString(ingredientTuple.getAmount()));
+                    recipeElement.setAttribute("amount", Double.toString(ingredientTuple.getAmount()));
                     recipeElement.setAttribute("measure", ingredientTuple.getMeasure());
                 }
             }

@@ -13,10 +13,10 @@ import java.util.ArrayList;
 
 
 // TODO: customize recipe name
-public class AddIngredient extends AppCompatActivity {
+public class NewRecipe extends AppCompatActivity {
     //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    ArrayList<String> ingredient_names = new ArrayList<>();
-    ArrayList<IngredientTuple> ingredients;
+    private ArrayList<String> ingredient_names = new ArrayList<>();
+    private ArrayList<IngredientTuple> ingredients;
 
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<String> adapter;
@@ -24,7 +24,7 @@ public class AddIngredient extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_ingredient);
+        setContentView(R.layout.activity_new_recipe);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -41,7 +41,7 @@ public class AddIngredient extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 final String item = (String) parent.getItemAtPosition(position);
-                view.animate().setDuration(1000).alpha(0).withEndAction(new Runnable() {
+                /*view.animate().setDuration(1000).alpha(0).withEndAction(new Runnable() {
                             @Override
                             public void run() {
                                 ingredients.remove(ingredient_names.indexOf(item));
@@ -49,7 +49,12 @@ public class AddIngredient extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                                 view.setAlpha(1);
                             }
-                        });
+                        });*/
+                IngredientTuple ingredient = ingredients.get(ingredient_names.indexOf(item));
+                Intent i = new Intent(getApplicationContext(), NewIngredient.class);
+                i.putExtra("request_code", Utils.UPDATE_INGREDIENT_CODE);
+                i.putExtra("ingredient", ingredient);
+                startActivityForResult(i, Utils.UPDATE_INGREDIENT_CODE);
             }
         });
 
@@ -57,24 +62,23 @@ public class AddIngredient extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), NewIngredient.class);
+                i.putExtra("request_code", Utils.NEW_INGREDIENT_CODE);
                 startActivityForResult(i, Utils.NEW_INGREDIENT_CODE);
             }
         });
 
         findViewById(R.id.ok1_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                if (!ingredients.isEmpty()) {
-                    Intent i = new Intent();
-                    // Sending param key as 'website' and value as 'androidhive.info'
-                    i.putExtra("recipe", ingredients);
+                Intent i = new Intent();
+                // Sending param key as 'website' and value as 'androidhive.info'
+                i.putExtra("recipe", ingredients);
 
-                    // If this is a new recipe
-                    if (((ArrayList<IngredientTuple>) getIntent().getExtras().get("recipe")).size() == 0) {
-                        setResult(Utils.NEW_RECIPE_CODE, i);
-                    } else {
-                        // If this recipe already exists
-                        setResult(Utils.UPDATE_RECIPE_CODE, i);
-                    }
+                // If this is a new recipe
+                if (((ArrayList<IngredientTuple>) getIntent().getExtras().get("recipe")).size() == 0) {
+                    setResult(Utils.NEW_RECIPE_CODE, i);
+                } else {
+                    // If this recipe already exists
+                    setResult(Utils.UPDATE_RECIPE_CODE, i);
                 }
 
                 //Closing SecondScreen Activity
@@ -105,22 +109,26 @@ public class AddIngredient extends AppCompatActivity {
     protected void onActivityResult(int requestCode,
                                     int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Utils.NEW_INGREDIENT_CODE) {
-
-            // Storing result in a variable called myvar
-            // get("website") 'website' is the key value result data
-            android.text.SpannableString ingredient_name = (android.text.SpannableString) data.getExtras().get("ingredient_name");
-            android.text.SpannableString amount = (android.text.SpannableString) data.getExtras().get("amount");
-            String measurement = (String) data.getExtras().get("measurement");
-
+        if (resultCode == Utils.INGREDIENT_CODE) {
             try {
-                IngredientTuple newIngredient = new IngredientTuple(ingredient_name.toString(), Integer.valueOf(amount.toString()), measurement);
+                IngredientTuple newIngredient = (IngredientTuple) data.getExtras().get("new_ingredient");
+                if (requestCode == Utils.UPDATE_INGREDIENT_CODE) {
+                    IngredientTuple oldIngredient = (IngredientTuple) data.getExtras().get("old_ingredient");
+                    System.out.println(Utils.UPDATE_INGREDIENT_CODE + ": " + ingredients.remove(oldIngredient));
+                    System.out.println(Utils.UPDATE_INGREDIENT_CODE + ": " + ingredient_names.remove(oldIngredient.toString()));
+                }
+
                 ingredients.add(newIngredient);
                 ingredient_names.add(newIngredient.toString());
-                adapter.notifyDataSetChanged();
             } catch (Exception e) {
                 // Do nothing
             }
+        } else if (resultCode == Utils.DELETE_INGREDIENT_CODE) {
+            IngredientTuple oldIngredient = (IngredientTuple) data.getExtras().get("delete_ingredient");
+            System.out.println(Utils.DELETE_INGREDIENT_CODE + ": " + ingredients.remove(oldIngredient));
+            System.out.println(Utils.DELETE_INGREDIENT_CODE + ": " + ingredient_names.remove(oldIngredient.toString()));
         }
+
+        adapter.notifyDataSetChanged();
     }
 }
