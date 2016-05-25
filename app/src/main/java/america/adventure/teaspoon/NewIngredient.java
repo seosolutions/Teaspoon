@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-// TODO: delete ingredient
 public class NewIngredient extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private String measurement = "";
     private IngredientTuple newIngredient;

@@ -85,6 +85,7 @@ public class IngredientTuple implements java.io.Serializable {
     // http://jscience.org/
     // http://stackoverflow.com/questions/1193810/java-metric-unit-conversion-library
     private void convertToGram() {
+        // ATTENTION: Only do conversion when original unit is OUNCE
         if (measure.equals(Utils._OUNCE)) {
             UnitConverter converter = OUNCE.getConverterTo(GRAM);
 
