@@ -122,6 +122,7 @@ public class NewRecipe extends AppCompatActivity {
                 ingredient_names.add(newIngredient.toString());
             } catch (Exception e) {
                 // Do nothing
+                Utils.showToast(e.getMessage(), 0, this);
             }
         } else if (resultCode == Utils.DELETE_INGREDIENT_CODE) {
             IngredientTuple oldIngredient = (IngredientTuple) data.getExtras().get("delete_ingredient");

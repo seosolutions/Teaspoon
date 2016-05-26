@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Utils.verifyStoragePermissions(this);
         readFromXml();
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, recipe_names);
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void readFromXml() {
+    private void readFromXml() {
         Document dom;
         // Make an  instance of the DocumentBuilderFactory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -170,12 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 // System.out.println();
             }
         } catch (Exception e) {
-            Utils.showToast(e.toString(), 0, this);
+            Utils.showToast(e.getMessage(), 0, this);
         }
     }
 
-    public void writeToXml() {
+    private void writeToXml() {
         try {
+            xml_file.createNewFile();
+
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
@@ -203,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
             transformer.transform(new DOMSource(doc), new StreamResult(xml_file));
         } catch (Exception e) {
             // Do nothing
-            Utils.showToast(e.toString(), 0, this);
+            Utils.showToast(e.getMessage(), 0, this);
         }
     }
 

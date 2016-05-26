@@ -16,6 +16,7 @@ public class NewIngredient extends AppCompatActivity implements AdapterView.OnIt
     private EditText ingredient_name;
     private EditText amount;
     private int request_code;
+    private NewIngredient THIS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,8 @@ public class NewIngredient extends AppCompatActivity implements AdapterView.OnIt
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+        THIS = this;
 
         ingredient_name = (EditText)findViewById(R.id.ingredientName);
         amount = (EditText)findViewById(R.id.amount);
@@ -63,6 +66,7 @@ public class NewIngredient extends AppCompatActivity implements AdapterView.OnIt
                     i.putExtra("new_ingredient", newIngredient);
                 } catch (Exception e) {
                     // Do nothing
+                    Utils.showToast(e.getMessage(), 0, THIS);
                 }
 
                 // Setting resultCode to 100 to identify on old activity
@@ -112,6 +116,7 @@ public class NewIngredient extends AppCompatActivity implements AdapterView.OnIt
                     amount.setText(Double.toString(newIngredient.getAmount()));
                 } catch (Exception e) {
                     // Do nothing
+                    Utils.showToast(e.getMessage(), 0, this);
                 }
             }
         }
